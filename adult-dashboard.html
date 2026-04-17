@@ -54,22 +54,8 @@
         View each child’s emotional journey and support their growth.
       </p>
 
-      <div class="space-y-4">
-
-        <!-- CHILD CARD -->
-        <div class="bg-purple-50 rounded-xl p-4 flex items-center justify-between">
-          <div>
-            <p class="font-semibold text-purple-700">Star SilentWing</p>
-            <p class="text-gray-600 text-sm">Aura Bird • Baby Stage</p>
-          </div>
-          <div class="text-3xl">🐦</div>
-        </div>
-
-        <!-- ADD CHILD -->
-        <a href="adult-children.html"
-           class="block text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-full">
-          Manage Children
-        </a>
+      <div id="dashChildrenSlot" class="space-y-4">
+        <!-- populated by JS -->
       </div>
     </div>
 
@@ -80,10 +66,7 @@
         Confirm moments when a child used an emotional skill in real life.
       </p>
 
-      <div class="bg-yellow-50 rounded-xl p-4 mb-4">
-        <p class="font-semibold text-purple-700 text-sm">Star SilentWing</p>
-        <p class="text-gray-700 text-sm">Used a calming skill today.</p>
-      </div>
+      <div id="dashWitnessSlot" class="mb-4"><!-- populated by JS --></div>
 
       <a href="adult-notifications.html"
          class="block text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-full">
@@ -98,10 +81,7 @@
         Approve meaningful milestones your child has earned.
       </p>
 
-      <div class="bg-blue-50 rounded-xl p-4 mb-4">
-        <p class="font-semibold text-purple-700 text-sm">Star SilentWing</p>
-        <p class="text-gray-700 text-sm">Completed Baby Stage.</p>
-      </div>
+      <div id="dashKeepsakeSlot" class="mb-4"><!-- populated by JS --></div>
 
       <a href="adult-notifications.html"
          class="block text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-full">
@@ -116,10 +96,7 @@
         Join private circles when a child invites you.
       </p>
 
-      <div class="bg-green-50 rounded-xl p-4 mb-4">
-        <p class="font-semibold text-purple-700 text-sm">Star SilentWing</p>
-        <p class="text-gray-700 text-sm">Invited you to their private circle.</p>
-      </div>
+      <div id="dashCircleSlot" class="mb-4"><!-- populated by JS --></div>
 
       <a href="adult-circles.html"
          class="block text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-full">
@@ -144,6 +121,58 @@
       const el = document.getElementById('dashWelcome');
       if (el) el.textContent = 'Welcome back, ' + formatted + '!';
     }
+  </script>
+
+  <script>
+    // Populate dashboard cards from real localStorage data
+    (function () {
+      function esc(s) {
+        return String(s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      const email    = localStorage.getItem('ventpals_parent_email') || '';
+      const all      = JSON.parse(localStorage.getItem('ventpals_children') || '[]');
+      const children = all.filter(function (c) { return c.parentEmail === email; });
+
+      // --- Connected Children ---
+      var slot = document.getElementById('dashChildrenSlot');
+      if (slot) {
+        if (children.length === 0) {
+          slot.innerHTML =
+            '<p class="text-gray-500 text-sm mb-4">No children added yet.</p>' +
+            '<a href="adult-children.html" class="block text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-full">Add a Child</a>';
+        } else {
+          slot.innerHTML =
+            children.map(function (c) {
+              return '<div class="bg-purple-50 rounded-xl p-4 flex items-center justify-between mb-3">' +
+                '<div>' +
+                  '<p class="font-semibold text-purple-700">' + esc(c.name) + '</p>' +
+                  '<p class="text-gray-600 text-sm">Connected child</p>' +
+                '</div>' +
+                '<div class="text-3xl">🐦</div>' +
+              '</div>';
+            }).join('') +
+            '<a href="adult-children.html" class="block text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-full">Manage Children</a>';
+        }
+      }
+
+      // --- Witness Confirmations ---
+      var empty = '<p class="text-gray-400 text-sm italic">No pending items.</p>';
+      var ws = document.getElementById('dashWitnessSlot');
+      if (ws) ws.innerHTML = empty;
+
+      // --- Keepsake Approvals ---
+      var ks = document.getElementById('dashKeepsakeSlot');
+      if (ks) ks.innerHTML = empty;
+
+      // --- Circle Invitations ---
+      var cs = document.getElementById('dashCircleSlot');
+      if (cs) cs.innerHTML = empty;
+    }());
   </script>
 
   <script>

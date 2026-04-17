@@ -32,6 +32,10 @@
 
   <!-- HEADER -->
   <section class="text-center py-10 px-4">
+    <div class="flex items-center justify-center gap-2 mb-6">
+      <span class="text-3xl" aria-hidden="true">🌿</span>
+      <span class="text-2xl font-bold text-purple-700">VentPals Grown‑Ups</span>
+    </div>
     <div class="text-5xl mb-4">🌱</div>
     <h1 class="text-3xl font-bold text-purple-700 mb-2">Create Your Grown‑Up Account</h1>
     <p class="text-gray-600 max-w-xl mx-auto text-sm">
@@ -165,7 +169,7 @@
       localStorage.setItem('ventpals_parents', JSON.stringify(parents));
       localStorage.setItem('ventpals_parent_logged_in', 'true');
       localStorage.setItem('ventpals_parent_email', email);
-      window.location.href = 'adult-dashboard.html';
+      window.location.href = 'adult-children.html';
     });
   </script>
 
