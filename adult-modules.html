@@ -16,12 +16,13 @@
 </head>
 
 <body class="text-gray-800">
+  <script>if(localStorage.getItem('ventpals_parent_logged_in')!=='true'){window.location.replace('adult-login.html');}</script>
 
   <!-- NAV -->
   <nav class="bg-white/70 backdrop-blur-md shadow-sm sticky top-0 z-40">
     <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
       <a href="adult-dashboard.html" class="flex items-center gap-2">
-        <img src="assets/images/logo.png" class="h-8" alt="VentPals Logo">
+        <span class="text-2xl leading-none" aria-hidden="true">🌿</span>
         <span class="font-bold text-lg text-purple-700">VentPals Grown‑Ups</span>
       </a>
 
@@ -30,6 +31,7 @@
         <li><a href="adult-children.html" class="hover:text-purple-900">Children</a></li>
         <li><a href="adult-notifications.html" class="hover:text-purple-900">Notifications</a></li>
         <li><a href="adult-profile.html" class="hover:text-purple-900">Profile</a></li>
+        <li><a href="adult-login.html" id="logoutLink" class="hover:text-red-500">Log Out</a></li>
       </ul>
     </div>
   </nav>
@@ -110,6 +112,16 @@
   <footer class="py-6 text-center text-gray-500 text-xs">
     VentPals Grown‑Ups • Support Their Journey.
   </footer>
+
+
+  <script>
+    document.getElementById('logoutLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('ventpals_parent_logged_in');
+      localStorage.removeItem('ventpals_parent_email');
+      window.location.href = 'adult-login.html';
+    });
+  </script>
 
 </body>
 </html>
