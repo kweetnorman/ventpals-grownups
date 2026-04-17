@@ -214,6 +214,7 @@
       const idx = parents.findIndex(p => p.email === email);
       if (idx === -1) return;
 
+      // ⚠️  DEMO ONLY: atob() is trivially reversible. Replace with server-side verification.
       if (atob(parents[idx].passwordHash) !== current) {
         errBox.textContent = 'Current password is incorrect.';
         errBox.classList.remove('hidden');
@@ -229,6 +230,7 @@
         errBox.classList.remove('hidden');
         return;
       }
+      // ⚠️  DEMO ONLY: btoa() is not a real hash. Replace with server-side hashing.
       parents[idx].passwordHash = btoa(next);
       localStorage.setItem('ventpals_parents', JSON.stringify(parents));
       document.getElementById('currentPassword').value = '';
