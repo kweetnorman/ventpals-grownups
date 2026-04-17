@@ -21,7 +21,7 @@
   <nav class="bg-white/70 backdrop-blur-md shadow-sm sticky top-0 z-40">
     <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
       <a href="adult-login.html" class="flex items-center gap-2">
-        <img src="assets/images/logo.png" class="h-8" alt="VentPals Logo">
+        <span class="text-2xl leading-none" aria-hidden="true">🌿</span>
         <span class="font-bold text-lg text-purple-700">VentPals Grown‑Ups</span>
       </a>
       <a href="adult-login.html" class="text-purple-600 hover:text-purple-800 text-sm">
@@ -50,7 +50,7 @@
         We’ll send you important updates about your connected children.
       </p>
 
-      <input type="email" placeholder="Email..."
+      <input type="email" id="signupEmail" placeholder="Email..."
              class="w-full border border-purple-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
     </div>
 
@@ -61,7 +61,7 @@
         Tell us how you support the child or children in your care.
       </p>
 
-      <select class="w-full border border-purple-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <select id="signupRole" class="w-full border border-purple-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
         <option>Parent</option>
         <option>Guardian</option>
         <option>Teacher</option>
@@ -85,22 +85,24 @@
     <div class="bg-white rounded-3xl shadow p-6 mb-8">
       <h2 class="text-xl font-semibold text-purple-700 mb-3">Create a Password</h2>
 
-      <input type="password" placeholder="Password..."
+      <input type="password" id="signupPassword" placeholder="Password..."
              class="w-full border border-purple-300 rounded-xl px-4 py-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-purple-500" />
 
-      <input type="password" placeholder="Confirm password..."
+      <input type="password" id="signupConfirm" placeholder="Confirm password..."
              class="w-full border border-purple-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
     </div>
 
     <!-- SUBMIT -->
-    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-full">
+    <div id="signupError" class="hidden bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4" role="alert"></div>
+
+    <button id="signupBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-full">
       Create My Account
     </button>
 
     <!-- LINK BACK TO KIDS SIGNUP -->
     <div class="text-center mt-6 text-sm text-gray-600">
       Creating an account for a child?
-      <a href="../signup.html" class="text-purple-700 font-semibold hover:text-purple-900">
+      <a href="https://ventpals.com/signup.html" class="text-purple-700 font-semibold hover:text-purple-900">
         Go to the kids’ signup
       </a>
     </div>
@@ -111,6 +113,61 @@
   <footer class="py-6 text-center text-gray-500 text-xs">
     VentPals Grown‑Ups • Support Their Journey.
   </footer>
+
+  <script>
+    function showSignupError(msg) {
+      const box = document.getElementById('signupError');
+      box.textContent = msg;
+      box.classList.remove('hidden');
+    }
+
+    document.getElementById('signupBtn').addEventListener('click', () => {
+      const email    = document.getElementById('signupEmail').value.trim().toLowerCase();
+      const role     = document.getElementById('signupRole').value;
+      const password = document.getElementById('signupPassword').value;
+      const confirm  = document.getElementById('signupConfirm').value;
+      const errorBox = document.getElementById('signupError');
+      errorBox.classList.add('hidden');
+
+      if (!email) {
+        showSignupError('Please enter your email address.');
+        return;
+      }
+      if (!password) {
+        showSignupError('Please create a password.');
+        return;
+      }
+      if (password.length < 6) {
+        showSignupError('Password must be at least 6 characters.');
+        return;
+      }
+      if (password !== confirm) {
+        showSignupError('Passwords do not match.');
+        return;
+      }
+
+      const parents = JSON.parse(localStorage.getItem('ventpals_parents') || '[]');
+      if (parents.find(p => p.email === email)) {
+        showSignupError('An account with this email already exists. Please log in instead.');
+        return;
+      }
+
+      const parent = {
+        email,
+        role,
+        // NOTE: btoa() is used here for the localStorage demo only.
+        // A real deployment MUST replace this with server-side hashing.
+        passwordHash: btoa(password),
+        createdAt: new Date().toISOString()
+      };
+
+      parents.push(parent);
+      localStorage.setItem('ventpals_parents', JSON.stringify(parents));
+      localStorage.setItem('ventpals_parent_logged_in', 'true');
+      localStorage.setItem('ventpals_parent_email', email);
+      window.location.href = 'adult-dashboard.html';
+    });
+  </script>
 
 </body>
 </html>
